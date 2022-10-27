@@ -25,7 +25,6 @@ jobs:
 
     name: ${{matrix.config.name}} (${{matrix.buildType.name}})
     runs-on: ${{matrix.config.os}}
-    needs: [ create-release ]
 
     env:
       BUILDCACHE_DEBUG: 1
