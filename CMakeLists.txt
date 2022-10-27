@@ -28,5 +28,5 @@ install(TARGETS example_project DESTINATION "${CMAKE_INSTALL_PREFIX}")
 
 # Install pdb file
 if (MSVC)
-    install(FILES $<TARGET_PDB_FILE:example_project> DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    install(FILES $<TARGET_PDB_FILE:example_project> DESTINATION "${CMAKE_INSTALL_PREFIX}" OPTIONAL)
 endif ()
