@@ -1,0 +1,7 @@
+install
+build
+
+# Clion files
+cmake-*
+.idea
+

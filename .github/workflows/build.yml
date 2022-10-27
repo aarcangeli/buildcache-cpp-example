@@ -1,0 +1,85 @@
+name: Build
+
+on:
+  push:
+    branches:
+
+concurrency:
+  group: release-${{ github.ref_name }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { name: "Windows MSVC", os: windows-2022 }
+          - { name: "Ubuntu Clang", os: ubuntu-22.04 }
+          - { name: "MacOS AppleClang", os: macos-12 }
+        buildType:
+          - { name: "Debug" }
+          - { name: "RelWithDebInfo" }
+          - { name: "Release" }
+
+    name: ${{matrix.config.name}} (${{matrix.buildType.name}})
+    runs-on: ${{matrix.config.os}}
+    needs: [ create-release ]
+
+    env:
+      BUILDCACHE_DEBUG: 1
+      BUILDCACHE_MAX_CACHE_SIZE: 3000000000 # 3GB
+      BUILDCACHE_LOG_FILE: ""
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup msbuild
+        if: runner.os == 'Windows'
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Setup Build Cache
+        uses: mikehardy/buildcache-action@v1
+        with:
+          cache_key: build-${{ runner.os }}
+          upload_buildcache_log: false
+
+      - name: Setup ninja
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.10.2
+          dest: ${{ runner.workspace }}/ninja_bin
+
+      - name: Enable Developer Command Prompt
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1.10.0
+        with:
+          arch: x64
+
+      - name: Use clang on linux
+        shell: bash
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y llvm clang
+          clang --version
+          echo CC=clang >> $GITHUB_ENV
+          echo CXX=clang++ >> $GITHUB_ENV
+
+      - name: Configure CMake
+        shell: bash
+        run: cmake -G Ninja -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.buildType.name }}
+
+      - name: Build
+        run: cmake --build build --target install
+
+      - name: Run the program
+        shell: bash
+        run: install/example_project
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.config.name}}-${{matrix.buildType.name}}
+          path: install
