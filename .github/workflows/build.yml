@@ -68,7 +68,7 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        run: cmake -G Ninja -S llvm -B build -D CMAKE_BUILD_TYPE=${{ matrix.buildType.name }}
+        run: cmake -G Ninja -S . -B build -D CMAKE_BUILD_TYPE=${{ matrix.buildType.name }}
 
       - name: Build
         run: cmake --build build --target install
