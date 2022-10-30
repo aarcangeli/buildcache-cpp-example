@@ -26,6 +26,9 @@ jobs:
     name: ${{matrix.config.name}} (${{matrix.buildType.name}})
     runs-on: ${{matrix.config.os}}
 
+    env:
+      SCCACHE_ENABLE_MULTIPLE_ARCH: 1
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
