@@ -1,6 +1,6 @@
 # Setup build cache
-set(CMAKE_C_COMPILER_LAUNCHER "buildcache")
-set(CMAKE_CXX_COMPILER_LAUNCHER "buildcache")
+set(CMAKE_C_COMPILER_LAUNCHER "sccache")
+set(CMAKE_CXX_COMPILER_LAUNCHER "sccache")
 
 # Setup installation directory
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/install")
