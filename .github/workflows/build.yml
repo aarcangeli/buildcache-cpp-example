@@ -35,7 +35,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.1
 
       - name: Setup sccache
-        uses: aarcangeli/ccache-action@v1.2
+        uses: aarcangeli/ccache-action@main
         with:
           max-size: 1.5G
           key: ${{ runner.os }}-${{ matrix.buildType.name }}
