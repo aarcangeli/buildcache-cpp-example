@@ -28,7 +28,7 @@ jobs:
 
     env:
       SCCACHE_ENABLE_MULTIPLE_ARCH: 1
-      SCCACHE_LOG: debug
+      SCCACHE_LOG: trace
 
     steps:
       - name: Checkout
